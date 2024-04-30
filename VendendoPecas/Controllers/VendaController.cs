@@ -70,6 +70,8 @@ namespace VendendoPecas.Controllers
                 _db.Vendas.Add(vendas);
                 _db.SaveChanges();
 
+                TempData["MensagemSucesso"] = "Cadastro realizado com sucesso!";
+
                 return RedirectToAction("Index");
             }
 
@@ -84,8 +86,13 @@ namespace VendendoPecas.Controllers
                 _db.Vendas.Update(venda);
                 _db.SaveChanges();
 
+                TempData["MensagemSucesso"] = "Edição realizado com sucesso!";
+
                 return RedirectToAction("Index");
             }
+
+            TempData["MensagemErro"] = "Algum erro ocorreu ao realizar a edição!";
+
 
             return View(venda);
         }
@@ -100,6 +107,8 @@ namespace VendendoPecas.Controllers
 
             _db.Vendas.Remove(venda);
             _db.SaveChanges();
+
+            TempData["MensagemSucesso"] = "Exclusão realizada com sucesso!";
 
             return RedirectToAction("Index");
         }
