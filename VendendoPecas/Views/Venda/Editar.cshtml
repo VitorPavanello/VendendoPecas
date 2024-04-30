@@ -1,0 +1,37 @@
+﻿@model VendasModel
+@{
+    ViewData["title"] = "Editar Venda";
+}
+
+<div class="container bg-dark p-5 rounded-5">
+    <div class="mb-5 text-center">
+        <h1 class="text-light">Edição de Venda</h1>
+    </div>
+
+    <form method="post" asp-controller="Venda" asp-action="Editar">
+        <input type="hidden" asp-for="Id"/>
+
+        <div class="mb-3">
+            <label for="Comprador" class="form-label text-light">Comprador:</label>
+            <input type="text" class="form-control" asp-for="Comprador" id="Comprador" placeholder="Quem está comprando?" />
+            <span class="text-danger" asp-validation-for="Comprador"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="Vendedor" class="form-label text-light">Vendedor:</label>
+            <input type="text" class="form-control" asp-for="Vendedor" id="Vendedor" placeholder="Quem está vendendo?" />
+            <span class="text-danger" asp-validation-for="Vendedor"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="PecaVendida" class="form-label text-light">Nome da Peça:</label>
+            <input type="text" class="form-control" asp-for="PecaVendida" id="PecaVendida" placeholder="Qual peça está sendo vendida?" />
+            <span class="text-danger" asp-validation-for="PecaVendida"></span>
+        </div>
+
+        <div class="d-flex gap-5 mt-5">
+            <a class="btn btn-primary w-50" asp-controller="Venda" asp-action="Index">Voltar</a>
+            <button type="submit" class="btn btn-success w-50">Editar</button>
+        </div>
+    </form>
+</div>
