@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using VendendoPecas.Data;
 using VendendoPecas.Models;
 
@@ -62,11 +64,55 @@ namespace VendendoPecas.Controllers
             return View(vendas);
         }
 
+        [HttpGet]
+        public IActionResult Exportar()
+        {
+            var dados = GetDados();
+
+            using (XLWorkbook workbook = new XLWorkbook())
+            {
+                workbook.AddWorksheet(dados, "Dados Vendas");
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    workbook.SaveAs(ms);
+
+                    return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spredsheetml.sheet", "Vendas.xls");
+                }
+            }
+        }
+
+        private DataTable GetDados()
+        {
+            DataTable dt = new DataTable();
+
+            dt.TableName = "Dados Vendas";
+
+            dt.Columns.Add("Comprador", typeof(string));
+            dt.Columns.Add("Vendedor", typeof(string));
+            dt.Columns.Add("Peça Vendida", typeof(string));
+            dt.Columns.Add("Data Atualização", typeof(DateTime));
+
+            var dados = _db.Vendas.ToList();
+
+            if (dados.Count > 0)
+            {
+                dados.ForEach(venda =>
+                {
+                    dt.Rows.Add(venda.Comprador, venda.Vendedor, venda.PecaVendida, venda.DataVenda);
+                });
+            }
+
+            return dt;
+        }
+
         [HttpPost]
         public IActionResult Cadastrar(VendasModel vendas)
         {
             if (ModelState.IsValid)
             {
+                vendas.DataVenda = DateTime.Now;
+
                 _db.Vendas.Add(vendas);
                 _db.SaveChanges();
 
@@ -83,7 +129,13 @@ namespace VendendoPecas.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Vendas.Update(venda);
+                var vendaDB = _db.Vendas.Find(venda.Id);
+
+                vendaDB.Comprador = venda.Comprador;
+                vendaDB.Vendedor = venda.Vendedor;
+                vendaDB.PecaVendida = venda.PecaVendida;
+
+                _db.Vendas.Update(vendaDB);
                 _db.SaveChanges();
 
                 TempData["MensagemSucesso"] = "Edição realizado com sucesso!";
@@ -92,7 +144,6 @@ namespace VendendoPecas.Controllers
             }
 
             TempData["MensagemErro"] = "Algum erro ocorreu ao realizar a edição!";
-
 
             return View(venda);
         }

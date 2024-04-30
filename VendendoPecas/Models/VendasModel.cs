@@ -15,6 +15,6 @@ namespace VendendoPecas.Models
         [Required(ErrorMessage = "Digite o nome da Peça Vendida!")]
         public string PecaVendida { get; set; }
 
-        public DateTime DataUltimaAtualizacao { get; set; } = DateTime.Now;
+        public DateTime DataVenda { get; set; }
     }
 }
